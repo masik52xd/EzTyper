@@ -17,8 +17,10 @@
 * 💡 **"Idea of ​​the Day":** A generator for inspiration and quick note ideas.
 * 🧹 **Text Cleaner:** Quickly clean and format text.
 * 📖 **Reading Time Calculator:** Automatically estimates the time required to read the text aloud or silently.
-* 👁️ **Live Preview (F5):** Real-time preview of the formatted text.
 * At the moment only Ukrainian Language
+
+* 👁️ **Live Preview (F5):** Real-time preview of the formatted text.
+<img width="1255" height="775" alt="image" src="https://github.com/user-attachments/assets/04f0fb29-9a57-4c70-8f22-81310644e484" />
 
 ---
 
