@@ -2,8 +2,9 @@
 # ✍️ EzTyper — Python Edition
 
 > A modern, lightweight, and feature-rich text editor with built-in productivity tools, built using Python and PyQt6.
-<img width="1152" height="782" alt="image" src="https://github.com/user-attachments/assets/c72e93ed-82db-4988-adec-86fc837fdd69" />
-<img width="502" height="532" alt="image" src="https://github.com/user-attachments/assets/cd6bbcb9-b6ab-4095-9099-4e5a03b8caa1" />
+<img width="1152" height="782" alt="image" src="https://github.com/user-attachments/assets/4f754d77-65f0-45ad-a532-c8466de93519" />
+<img width="552" height="802" alt="image" src="https://github.com/user-attachments/assets/27ef7291-c6f4-41c4-ac24-1816ae03b01f" />
+
 
 ## ✨ Key Features
 
