@@ -26,6 +26,7 @@
 
 ## 🛠️ Tech Stack
 
+* **Published under MIT license**
 * **Programming Language:** Python 3.x
 * **GUI Framework:** PyQt6
 # DO NOT INSTALL IN SYSTEM FOLDERS ALIKE "PROGRAM FILES", "PROGRAM FILES X86", "WINDOWS" ETC.
