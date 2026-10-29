@@ -1,9 +1,11 @@
 
-# ✍️ EzTyper — Python Edition
+# ✍️ EzTyper
 
-> A modern, lightweight, and feature-rich text editor with built-in productivity tools, built using Python and PyQt6.
-<img width="1152" height="782" alt="image" src="https://github.com/user-attachments/assets/4f754d77-65f0-45ad-a532-c8466de93519" />
-<img width="552" height="802" alt="image" src="https://github.com/user-attachments/assets/27ef7291-c6f4-41c4-ac24-1816ae03b01f" />
+> A modern, lightweight, and feature-rich text editor with built-in productivity tools, on ~Python and PyQt6.~ HTML
+<img width="1920" height="1040" alt="image" src="https://github.com/user-attachments/assets/5330c3c5-2c05-4dd2-b0e7-48cd7509a593" />
+<img width="1920" height="1017" alt="image" src="https://github.com/user-attachments/assets/fd81440b-471a-44ec-b6db-ef2299d326b6" />
+<img width="1920" height="1040" alt="image" src="https://github.com/user-attachments/assets/f506189e-3423-4e5b-b8d5-eb3c0aa1f8de" />
+
 
 
 ## ✨ Key Features
@@ -20,7 +22,8 @@
 * 📖 **Reading Time Calculator:** Automatically estimates the time required to read the text aloud or silently.
 
 * 👁️ **Live Preview (F5):** Real-time preview of the formatted text.
-<img width="1255" height="775" alt="image" src="https://github.com/user-attachments/assets/04f0fb29-9a57-4c70-8f22-81310644e484" />
+<img width="1920" height="1040" alt="image" src="https://github.com/user-attachments/assets/ac0ceef6-4cd8-4022-a57e-51f94b26f03b" />
+
 
 ---
 
