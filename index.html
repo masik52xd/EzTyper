@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>EzTyper</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<meta name="theme-color" content="#7a4bf5">
+<style>
+:root{--bg:#0c0714;--card:#150d22;--tx:#e3def2;--mu:#8e869c;--ac:#7a4bf5;--r:10px;--bl:0px;--bgi:none;--bd:rgba(128,128,128,.25);--ef:15px;--pf:16px;--ff:Consolas,monospace;--pff:'Segoe UI',sans-serif}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background-color:var(--bg);background-image:var(--bgi);background-attachment:fixed;color:var(--tx);font:14px 'Segoe UI',system-ui,sans-serif;display:flex;flex-direction:column;overflow:hidden;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+.glass{background:var(--card);backdrop-filter:blur(var(--bl)) saturate(1.5);-webkit-backdrop-filter:blur(var(--bl)) saturate(1.5);border:1px solid var(--bd);border-radius:var(--r)}
+#bar,#tabs,#st{display:flex;gap:6px;align-items:center;margin:6px 8px 0;padding:6px;flex-wrap:wrap}
+#tabs{flex-wrap:nowrap;overflow-x:auto;padding:4px}
+button,select,input{font:inherit;color:var(--tx);background:transparent;border:1px solid var(--bd);border-radius:calc(var(--r)*.7);padding:6px 10px;cursor:pointer}
+#bar button{display:inline-flex;align-items:center}#bar button b{font-weight:400;margin-right:6px}
+button:hover{border-color:var(--ac);color:var(--ac)}
+.tab{display:flex;gap:8px;white-space:nowrap;align-items:center;padding:6px 10px;border-radius:calc(var(--r)*.7);cursor:pointer;color:var(--mu)}
+.tab.on{background:var(--ac);color:#fff}
+.tab i{font-style:normal;opacity:.6}
+#main{flex:1;display:flex;gap:8px;margin:6px 8px;min-height:0}
+.pane{flex:1;min-width:0;position:relative;overflow:hidden;display:flex}
+#gut{overflow:hidden;color:var(--mu);text-align:right;font:var(--ef)/1.6 var(--ff);padding:0 8px;border-right:1px solid var(--bd);user-select:none;min-width:2.5em}
+#gi{will-change:transform}
+#ed{flex:1;color:var(--tx);caret-color:var(--ac);resize:none;border:0;border-radius:0;background:transparent;outline:0;font:var(--ef)/1.6 var(--ff);tab-size:4;cursor:text;min-width:0}
+#mir{position:absolute;visibility:hidden;left:-9999px;top:0;padding:0}
+#pv{display:none;overflow:auto;padding:16px 24px;font:var(--pf)/1.6 var(--pff)}
+#pv h1,#pv h2,#pv h3{color:var(--ac)}#pv code{background:var(--bd);padding:1px 5px;border-radius:4px}
+#pv pre{background:var(--bd);padding:10px;border-radius:6px;overflow:auto}#pv blockquote{border-left:3px solid var(--ac);margin:8px 0;padding-left:12px;color:var(--mu)}#pv a{color:var(--ac)}
+body.pv #pv{display:block}
+#st{color:var(--mu);justify-content:space-between}
+dialog{color:var(--tx);max-width:560px;width:92%;max-height:86vh;overflow:auto;padding:18px;background:var(--bg);background-image:var(--bgi);border:1px solid var(--bd);border-radius:var(--r)}
+dialog::backdrop{background:rgba(0,0,0,.5);backdrop-filter:blur(4px)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:8px 0}
+.row input[type=number]{width:90px}
+.hp h1,.hp h2,.hp h3{color:var(--ac)}
+/* Metro: Windows 8.1 tiles */
+[data-th=metro]{--r:0px;--bd:#555;font-family:'Segoe UI',sans-serif}
+[data-th=metro] #bar,[data-th=metro] #tabs{background:transparent;border:0;padding:0;gap:6px}
+[data-th=metro] #bar{align-items:flex-start}
+[data-th=metro] #bar button{width:96px;height:96px;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start;text-align:left;padding:8px 10px;border:0;border-radius:0;color:#fff;font-size:12px;transition:transform .12s}
+[data-th=metro] #bar button b{font-size:32px;font-weight:300;margin:0}
+[data-th=metro] #bar button[data-a=pomo]{width:198px}
+[data-th=metro] #bar button:nth-of-type(1){background:#1ba1e2}[data-th=metro] #bar button:nth-of-type(2){background:#00a300}[data-th=metro] #bar button:nth-of-type(3){background:#e3a21a}[data-th=metro] #bar button:nth-of-type(4){background:#d80073}[data-th=metro] #bar button:nth-of-type(5){background:#7e3878}[data-th=metro] #bar button:nth-of-type(6){background:#00aba9}[data-th=metro] #bar button:nth-of-type(7){background:#647687}[data-th=metro] #bar button:nth-of-type(8){background:#825a2c}
+[data-th=metro] #bar button:hover{color:#fff;outline:2px solid rgba(255,255,255,.45)}
+[data-th=metro] #bar button:active{transform:scale(.94)}
+[data-th=metro] .tab{border-radius:0;background:#3a3a3d;color:#ddd}
+[data-th=metro] .tab.on{background:var(--ac);color:#fff}
+/* Liquid Glass */
+[data-th=liquid] .glass{box-shadow:inset 0 1px 0 rgba(255,255,255,.15),0 8px 28px rgba(0,0,0,.3)}
+[data-th=liquid] button{background:rgba(255,255,255,.06);box-shadow:inset 0 1px 0 rgba(255,255,255,.14)}
+[data-th=liquid] .tab.on{background:rgba(255,255,255,.14);box-shadow:inset 0 1px 0 rgba(255,255,255,.25)}
+[data-th=liquid] dialog{background:rgba(16,18,36,.8);backdrop-filter:blur(30px)}
+/* Slides Deck */
+[data-th=slides] #pv h1,[data-th=slides] #pv h2{font-family:Georgia,serif}
+[data-th=slides] .pane{box-shadow:0 10px 30px rgba(40,30,90,.18)}
+[data-th=slides] .tab.on{border-bottom:3px solid var(--ac);background:#fff;color:var(--ac)}
+[data-th=slides] #pv{background:linear-gradient(180deg,#fff,#f4f1ff);font-size:calc(var(--pf)*1.1)}
+@keyframes inR{from{transform:translateX(60px);opacity:0}}
+@keyframes inL{from{transform:translateX(-60px);opacity:0}}
+.sR{animation:inR .35s cubic-bezier(.2,.8,.2,1)}.sL{animation:inL .35s cubic-bezier(.2,.8,.2,1)}
+body.pv #pv{animation:inR .3s}
+@media(max-width:700px){#main{flex-direction:column}}
+</style>
+</head>
+<body>
+<div id="bar" class="glass"></div>
+<div id="tabs" class="glass"></div>
+<div id="main"><div class="pane glass" id="ep"><div id="gut"><div id="gi"></div></div><textarea id="ed" spellcheck="false"></textarea><div id="mir"></div></div><div class="pane glass" id="pv"></div></div>
+<div id="st" class="glass"></div>
+<dialog id="dset"></dialog><dialog id="dhelp"></dialog>
+<input type="file" id="fi" hidden accept=".txt,.md,.py,.json,text/*">
+<script>
+const $=s=>document.querySelector(s),esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+const T={
+ua:{open:'Відкрити',save:'Зберегти',newtab:'Нова вкладка',idea:'💡 Ідея дня',pomo:'⏱️ Помодоро: Вимк',done:'⏱️ Помодоро: Готово!',clean:'🧹 Клінер',set:'Налаштування',help:'❓ Довідка',chars:'Символів',words:'Слів',paras:'Абзаців',lines:'Рядків',untitled:'Без назви',margin_s:'Відступ по боках (px)',margin_t:'Відступ зверху (px)',margin_b:'Відступ знизу (px)',theme:'Тема',time:'Розрахунок часу',preview:'Живе прев’ю',pfont:'Розмір прев’ю (px)',efont:'Розмір редактора (px)',family:'Шрифт редактора',nums:'Номери рядків',wrap:'Перенос слів',status:'Статусний бар',lang:'Мова',close:'Закрити',alert:'25 хвилин минуло! Час зробити перерву.',min:'хв.',modes:['Час читання','Час читання вголос','Час письма повільно','Час письма поспіхом'],help_md:'# Довідка\n### ⌨️ Гарячі клавіші\n* **Ctrl+T** — нова вкладка\n* **Ctrl+W** — закрити вкладку\n* **Ctrl+S** — зберегти\n* **F5** — Markdown-прев’ю\n* **F11** — повний екран\n### ⏱️ Помодоро\n25 хвилин роботи, потім перерва.\n### 🧹 Клінер\nПрибирає подвійні пробіли та зайві порожні рядки.\n\n*Розробник: **mwkdev** | [mwkdev.pp.ua](https://mwkdev.pp.ua)*'},
+en:{open:'Open',save:'Save',newtab:'New Tab',idea:'💡 Idea of the day',pomo:'⏱️ Pomodoro: Off',done:'⏱️ Pomodoro: Done!',clean:'🧹 Cleaner',set:'Settings',help:'❓ Help',chars:'Characters',words:'Words',paras:'Paragraphs',lines:'Lines',untitled:'Untitled',margin_s:'Side margin (px)',margin_t:'Top margin (px)',margin_b:'Bottom margin (px)',theme:'Theme',time:'Time calculation',preview:'Live preview',pfont:'Preview font size (px)',efont:'Editor font size (px)',family:'Editor font',nums:'Line numbers',wrap:'Word wrap',status:'Status bar',lang:'Language',close:'Close',alert:'25 minutes passed! Time for a break.',min:'min',modes:['Reading time','Reading aloud time','Slow typing time','Fast typing time'],help_md:'# Help\n### ⌨️ Shortcuts\n* **Ctrl+T** — new tab\n* **Ctrl+W** — close tab\n* **Ctrl+S** — save\n* **F5** — Markdown preview\n* **F11** — fullscreen\n### ⏱️ Pomodoro\n25 minutes of focus, then a break.\n### 🧹 Cleaner\nRemoves double spaces and extra blank lines.\n\n*Developer: **mwkdev** | [mwkdev.pp.ua](https://mwkdev.pp.ua)*'},
+ru:{open:'Открыть',save:'Сохранить',newtab:'Новая вкладка',idea:'💡 Идея дня',pomo:'⏱️ Помодоро: Выкл',done:'⏱️ Помодоро: Готово!',clean:'🧹 Клинер',set:'Настройки',help:'❓ Справка',chars:'Символов',words:'Слов',paras:'Абзацев',lines:'Строк',untitled:'Без названия',margin_s:'Отступ по бокам (px)',margin_t:'Отступ сверху (px)',margin_b:'Отступ снизу (px)',theme:'Тема',time:'Расчёт времени',preview:'Живой предпросмотр',pfont:'Размер предпросмотра (px)',efont:'Размер редактора (px)',family:'Шрифт редактора',nums:'Номера строк',wrap:'Перенос слов',status:'Статус бар',lang:'Язык',close:'Закрыть',alert:'25 минут прошло! Время сделать перерыв.',min:'мин.',modes:['Время чтения','Время чтения вслух','Время письма неспеша','Время письма в спешке'],help_md:'# Справка\n### ⌨️ Горячие клавиши\n* **Ctrl+T** — новая вкладка\n* **Ctrl+W** — закрыть вкладку\n* **Ctrl+S** — сохранить\n* **F5** — Markdown-предпросмотр\n* **F11** — полный экран\n### ⏱️ Помодоро\n25 минут работы, затем перерыв.\n### 🧹 Клинер\nУбирает двойные пробелы и лишние пустые строки.\n\n*Разработчик: **mwkdev** | [mwkdev.pp.ua](https://mwkdev.pp.ua)*'}};
+// theme: [bg,card,text,muted,accent,{extras}]
+const TH={
+'Deep Purple':['#0c0714','#150d22','#e3def2','#8e869c','#7a4bf5'],
+'Cyber Midnight':['#071114','#0e2025','#bbf7fc','#5f9599','#00ffcc'],
+'Nordic Dark':['#2e3440','#3b4252','#eceff4','#8e9bb0','#88c0d0'],
+'Light Mint':['#f4f7f6','#ffffff','#2c3e50','#7f8c8d','#2ecc71'],
+'Dracula Dark':['#282a36','#44475a','#f8f8f2','#6272a4','#ff79c6'],
+'Monokai Pro':['#2d2a2e','#403e41','#fcfcfa','#727072','#ffd866'],
+'Solarized Light':['#fdf6e3','#eee8d5','#657b83','#93a1a1','#268bd2'],
+'Catppuccin Mocha':['#1e1e2e','#313244','#cdd6f4','#a6adc8','#cba6f7'],
+'Retro Amber':['#120c00','#211600','#ffb000','#805800','#ffcc00'],
+'Metro UI':['#1b1b1b','#2d2d30','#ffffff','#a0a0a0','#0078d7',{th:'metro'}],
+'Liquid Glass':['#0a0d1c','rgba(255,255,255,.06)','#e8eaf6','rgba(232,234,246,.6)','#8fa8e8',{th:'liquid',r:'20px',bl:'22px',bd:'rgba(255,255,255,.12)',bgi:'radial-gradient(circle at 15% 15%,rgba(90,70,190,.55) 0,transparent 42%),radial-gradient(circle at 85% 25%,rgba(20,120,150,.5) 0,transparent 45%),radial-gradient(circle at 50% 100%,rgba(150,60,110,.45) 0,transparent 48%)'}],
+'Slides Deck':['#e6e1f5','#ffffff','#2b2544','#7a7394','#6c4cf0',{th:'slides',r:'16px',bgi:'linear-gradient(135deg,#e6e1f5,#f7efe6)'}]};
+const IDEAS=[['Огляд RTX 5050','# Нове народне рішення?\n\n## Характеристики\n* **Пам’ять:** 8 GB GDDR7\n* **Шина:** 128 bit\n\nЧи варто переплачувати?'],['План відео для YouTube','# Сценарій ролика\n\n## 1. Інтро (0:00–0:30)\n* Hook\n\n## 2. Основна частина\n* Проблема\n* Рішення\n\n## 3. Заклик до дії'],['Чек-лист на день','# 🎯 Завдання\n\n- [ ] 2 сесії Помодоро\n- [ ] Чернетка статті\n- [x] Прогулянка'],['Нотатки з книги','# Конспект\n\n> Найкращий спосіб передбачити майбутнє — створити його.\n\n1. Дисципліна важливіша за мотивацію\n2. Фокус на процесі'],['Пост для Telegram','🚀 **ВАЖЛИВА НОВИНА!**\n\nЩо нового:\n✨ Нові теми\n⚡ Швидший редактор']];
+const D={cu:{bg:'#14161f',card:'#1d2030',tx:'#e6e6f0',ac:'#ff7a59'},side:20,top:16,bot:16,theme:'Deep Purple',lang:'ua',mode:0,efont:15,pfont:16,family:'Consolas,monospace',nums:true,wrap:true,status:true,live:true};
+let S={tabs:[{t:'',x:'',p:''}],a:0,c:{...D}};
+try{const r=JSON.parse(localStorage.getItem('ezt')||'null');if(r&&r.tabs&&r.tabs.length)S={...S,...r,c:{...D,...r.c}}}catch(e){}
+const C=()=>S.c,L=()=>T[C().lang],ed=$('#ed'),gi=$('#gi'),mir=$('#mir');
+let pomo=0,pomoT=null,dir='sR';
+let st;function flush(){if(hasPy())pywebview.api.save_state(JSON.stringify(S))}
+function save(){try{localStorage.setItem('ezt',JSON.stringify(S))}catch(e){}if(hasPy()){clearTimeout(st);st=setTimeout(flush,150)}}
+function md(t){const i=s=>s.replace(/`([^`]+)`/g,'<code>$1</code>').replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/\*(.+?)\*/g,'<i>$1</i>').replace(/\[([^\]]+)\]\((https?:[^)]+)\)/g,'<a href="$2" target="_blank">$1</a>');
+let h='',lt='',code=0;const cl=()=>{if(lt){h+='</'+lt+'>';lt=''}};
+for(const raw of t.split('\n')){const l=esc(raw);let m;
+if(/^```/.test(l)){cl();h+=code?'</pre>':'<pre>';code=!code;continue}
+if(code){h+=l+'\n';continue}
+if(m=l.match(/^(#{1,6})\s+(.*)/)){cl();h+=`<h${m[1].length}>${i(m[2])}</h${m[1].length}>`}
+else if(/^(-{3,}|\*{3,})$/.test(l.trim())){cl();h+='<hr>'}
+else if(m=l.match(/^&gt;\s?(.*)/)){cl();h+=`<blockquote>${i(m[1])}</blockquote>`}
+else if(m=l.match(/^\s*[-*]\s+(\[[ xX]\]\s+)?(.*)/)){if(lt!='ul'){cl();h+='<ul>';lt='ul'}h+=`<li>${m[1]?(/x/i.test(m[1])?'☑ ':'☐ '):''}${i(m[2])}</li>`}
+else if(m=l.match(/^\s*\d+[.)]\s+(.*)/)){if(lt!='ol'){cl();h+='<ol>';lt='ol'}h+=`<li>${i(m[1])}</li>`}
+else if(!l.trim())cl();else{cl();h+=`<p>${i(l)}</p>`}}
+cl();return h}
+// Line numbers: every logical line gets the height of all its wrapped visual rows
+function nums(){const g=$('#gut');g.style.display=C().nums?'':'none';if(!C().nums)return;
+const cs=getComputedStyle(ed),w=ed.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight);
+mir.style.cssText=`width:${w}px;font-family:${cs.fontFamily};font-size:${cs.fontSize};line-height:${cs.lineHeight};letter-spacing:${cs.letterSpacing};white-space:${C().wrap?'pre-wrap':'pre'};overflow-wrap:break-word;tab-size:4`;
+const ls=ed.value.split('\n');mir.innerHTML=ls.map(l=>`<div>${esc(l)||'&#8203;'}</div>`).join('');
+const hs=[...mir.children].map(d=>d.getBoundingClientRect().height);
+const lh=parseFloat(cs.lineHeight)||parseFloat(cs.fontSize)*1.6;let n=0;
+gi.innerHTML=hs.map(h=>{let s='';for(let i=0,r=Math.max(1,Math.round(h/lh));i<r;i++)s+=`<div style="height:${lh}px">${++n}</div>`;return s}).join('');
+gi.style.paddingTop=cs.paddingTop;gi.style.transform=`translateY(${-ed.scrollTop}px)`}
+function stats(){const x=ed.value,t=L(),w=x.trim()?x.trim().split(/\s+/).length:0,p=x.split('\n').filter(s=>s.trim()).length,sp=[230,150,20,35][C().mode],ef=Math.max(w,Math.round(x.length/6)),sc=Math.round(ef/sp*60),m=!ef?'0 '+t.min:sc<60?sc+' '+(C().lang=='en'?'s':'с'):Math.floor(sc/60)+' '+t.min+' '+sc%60+' '+(C().lang=='en'?'s':'с');
+$('#st').innerHTML=`<span>${t.chars}: ${x.length} | ${t.words}: ${w} | ${t.paras}: ${p} | ${t.lines}: ${x.split('\n').length}</span><span>${t.modes[C().mode]}: ${m}</span>`}
+function pv(){if(document.body.classList.contains('pv'))$('#pv').innerHTML=md(ed.value)}
+function onInput(){S.tabs[S.a].x=ed.value;nums();stats();if(C().live)pv();save()}
+function title(k){const t=S.tabs[k];return t.t||L().untitled}
+function tabs(){$('#tabs').innerHTML=S.tabs.map((t,k)=>`<div class="tab ${k==S.a?'on':''}" data-k="${k}">${esc(title(k))}<i data-x="${k}">✕</i></div>`).join('')}
+function load(){ed.value=S.tabs[S.a].x;tabs();nums();stats();pv();const p=$('#ep');p.classList.remove('sR','sL');void p.offsetWidth;p.classList.add(dir)}
+function go(k){S.tabs[S.a].x=ed.value;dir=k>=S.a?'sR':'sL';S.a=k;load();save()}
+function newTab(t='',x=''){S.tabs[S.a].x=ed.value;S.tabs.push({t,x,p:''});dir='sR';S.a=S.tabs.length-1;load();save()}
+function closeTab(k){if(S.tabs.length==1)S.tabs[0]={t:'',x:'',p:''};else{S.tabs.splice(k,1);S.a=Math.min(S.a,S.tabs.length-1)}load();save()}
+function bar(){const t=L(),s=x=>x.replace(/^\S+\s/,''),B=[['open','📂',t.open],['save','💾',t.save],['new','➕',t.newtab],['idea','💡',s(t.idea)],['pomo','⏱️',pomo?pm():s(t.pomo)],['clean','🧹',s(t.clean)]],R=[['set','⚙',t.set],['help','❓',s(t.help)]],f=([a,i,l])=>`<button data-a=${a}${a=='pomo'?' id=bp':''}><b>${i}</b><span>${l}</span></button>`;$('#bar').innerHTML=B.map(f).join('')+'<span style="flex:1"></span>'+R.map(f).join('')}
+const pm=()=>String(Math.floor(pomo/60)).padStart(2,'0')+':'+String(pomo%60).padStart(2,'0');
+function togglePomo(){if(pomoT){clearInterval(pomoT);pomoT=null;pomo=0;bar();return}pomo=1500;pomoT=setInterval(()=>{pomo--;if(pomo<=0){clearInterval(pomoT);pomoT=null;pomo=0;bar();$('#bp span').textContent=L().done.replace(/^\S+\s/,'');alert(L().alert)}else $('#bp span').textContent=pm()},1000);bar()}
+function clean(){let s=ed.value.split('\n').map(l=>l.split(/\s+/).filter(Boolean).join(' ')).join('\n');while(s.includes('\n\n\n'))s=s.replace(/\n\n\n/g,'\n\n');ed.value=s.trim();onInput()}
+function apply(){const c=C();TH.Custom=[c.cu.bg,c.cu.card,c.cu.tx,`color-mix(in srgb,${c.cu.tx} 60%,transparent)`,c.cu.ac];const th=TH[c.theme]||TH['Deep Purple'],e=th[5]||{},r=document.documentElement.style,set=(k,v)=>r.setProperty(k,v);
+document.documentElement.dataset.th=e.th||'';set('--bg',th[0]);set('--card',th[1]);set('--tx',th[2]);set('--mu',th[3]);set('--ac',th[4]);set('--r',e.r||'10px');set('--bl',e.bl||'0px');set('--bgi',e.bgi||'none');set('--bd',e.bd||'rgba(128,128,128,.25)');
+set('--ef',c.efont+'px');set('--pf',c.pfont+'px');set('--ff',c.family);
+ed.style.padding=`${c.top}px ${c.side}px ${c.bot}px`;ed.wrap=c.wrap?'soft':'off';ed.style.whiteSpace=c.wrap?'':'pre';
+$('#st').style.display=c.status?'':'none';document.documentElement.lang=c.lang=='ua'?'uk':c.lang;bar();tabs();nums();stats();pv()}
+function togglePv(){document.body.classList.toggle('pv');pv();nums()}
+// ---- file I/O: pywebview (desktop) or browser (PWA / APK) ----
+const hasPy=()=>window.pywebview&&window.pywebview.api;
+async function openFile(){if(hasPy()){const r=await pywebview.api.open_file();if(r)addFile(r.name,r.text,r.path)}else $('#fi').click()}
+function addFile(n,x,p){const cur=S.tabs[S.a];if(!cur.x&&!cur.t){cur.t=n;cur.x=x;cur.p=p||'';load()}else{newTab(n,x);S.tabs[S.a].p=p||''}save()}
+$('#fi').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>addFile(f.name,r.result);r.readAsText(f);e.target.value=''};
+async function saveFile(){const t=S.tabs[S.a];t.x=ed.value;const name=t.t||'note.txt';
+if(hasPy()){const r=await pywebview.api.save_file(name,t.x,t.p||null);if(r){t.p=r.path;t.t=r.name;tabs();save()}}
+else{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t.x],{type:'text/plain'}));a.download=name.includes('.')?name:name+'.txt';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1e4)}}
+// ---- dialogs ----
+function settings(){const t=L(),c=C(),F=[['side','margin_s','n'],['top','margin_t','n'],['bot','margin_b','n'],['theme','theme','s',Object.keys(TH)],['lang','lang','s',['ua','en','ru']],['mode','time','s',t.modes],['efont','efont','n'],['pfont','pfont','n'],['family','family','s',['Consolas,monospace',"'JetBrains Mono',monospace",'Georgia,serif',"'Segoe UI',sans-serif",'Arial,sans-serif','monospace']],['cu.bg',0,'k',0],['cu.card',1,'k',0],['cu.tx',2,'k',0],['cu.ac',3,'k',0],['nums','nums','c'],['wrap','wrap','c'],['status','status','c'],['live','preview','c']];
+$('#dset').innerHTML=`<h2>${t.set}</h2>`+F.map(([k,l,ty,o])=>`<div class="row"><label>${ty=='k'?CL[c.lang][l]:t[l]}</label>`+(ty=='k'?`<input type=color data-k=${k} value="${c.cu[k.slice(3)]}">`:ty=='n'?`<input type=number data-k=${k} value="${c[k]}">`:ty=='c'?`<input type=checkbox data-k=${k} ${c[k]?'checked':''}>`:`<select data-k=${k}>${o.map((v,i)=>{const val=k=='mode'?i:v;return`<option value="${val}" ${val==c[k]?'selected':''}>${v}</option>`}).join('')}</select>`)+'</div>').join('')+`<div class=row><span></span><button onclick="dset.close()">${t.close}</button></div>`;
+$('#dset').showModal()}
+$('#dset').addEventListener('input',e=>{const el=e.target,k=el.dataset.k;if(!k)return;if(k.startsWith('cu.')){C().cu[k.slice(3)]=el.value;C().theme='Custom';apply();$('#dset select[data-k=theme]').value='Custom';return save()}C()[k]=el.type=='checkbox'?el.checked:el.type=='number'?+el.value:k=='mode'?+el.value:el.value;apply();if(k=='lang')settings();save()});
+function help(){$('#dhelp').innerHTML=`<div class=hp>${md(L().help_md)}</div><div class=row><span></span><button onclick="dhelp.close()">${L().close}</button></div>`;$('#dhelp').showModal()}
+const CL={ua:['Колір тла','Колір панелей','Колір шрифту','Колір акценту'],en:['Background','Panels','Text color','Accent'],ru:['Цвет фона','Цвет панелей','Цвет шрифта','Цвет акцента']};
+const dset=$('#dset'),dhelp=$('#dhelp');
+$('#bar').onclick=e=>{const a=e.target.closest('button')?.dataset.a;if(!a)return;({open:openFile,save:saveFile,new:()=>newTab(),idea:()=>{const[i,x]=IDEAS[Math.random()*IDEAS.length|0];newTab(i,x)},pomo:togglePomo,clean,set:settings,help})[a]()};
+$('#tabs').onclick=e=>{const x=e.target.dataset.x;if(x!=null)return closeTab(+x);const k=e.target.closest('.tab')?.dataset.k;if(k!=null&&+k!=S.a)go(+k)};
+ed.addEventListener('input',onInput);
+ed.addEventListener('scroll',()=>gi.style.transform=`translateY(${-ed.scrollTop}px)`);
+ed.addEventListener('keydown',e=>{if(e.key=='Tab'){e.preventDefault();document.execCommand('insertText',false,'    ')}});
+new ResizeObserver(()=>nums()).observe(ed);
+document.addEventListener('keydown',e=>{const k=e.key.toLowerCase();if(e.ctrlKey&&k=='t'){e.preventDefault();newTab()}else if(e.ctrlKey&&k=='w'){e.preventDefault();closeTab(S.a)}else if(e.ctrlKey&&k=='s'){e.preventDefault();saveFile()}else if(e.key=='F5'){e.preventDefault();togglePv()}else if(e.key=='F11'){e.preventDefault();document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}});
+window.addEventListener('pywebviewready',async()=>{const raw=await pywebview.api.load_state();if(raw){try{const r=JSON.parse(raw);S={...S,...r,c:{...D,...r.c}};apply();load()}catch(e){}}const r=await pywebview.api.startup();if(r)addFile(r.name,r.text,r.path)});
+addEventListener('pagehide',()=>{S.tabs[S.a].x=ed.value;try{localStorage.setItem('ezt',JSON.stringify(S))}catch(e){}flush()});
+if('serviceWorker'in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js').catch(()=>{});
+apply();load();
+</script>
+</body>
+</html>
