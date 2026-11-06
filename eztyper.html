@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="EzTyper — a modern, lightweight text editor with tabs, line numbers, Pomodoro timer, live preview and more. Free, MIT licensed, portable.">
+<title>EzTyper — Easy Typing App</title>
+<style>
+:root{--bg:#2e3440;--bg2:#3b4252;--bg3:#434c5e;--tx:#eceff4;--mu:#a9b3c4;--ac:#88c0d0;--ac2:#81a1c1;--gr:#a3be8c;--yl:#ebcb8b;--rd:#bf616a;--bd:rgba(255,255,255,.09);--card:rgba(59,66,82,.55);color-scheme:dark}
+@media (prefers-color-scheme:light){:root{--bg:#eceff4;--bg2:#e5e9f0;--bg3:#d8dee9;--tx:#2e3440;--mu:#566074;--ac:#2f7f96;--ac2:#5e81ac;--bd:rgba(46,52,64,.12);--card:rgba(255,255,255,.7);color-scheme:light}}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{font-family:"Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;background:var(--bg);color:var(--tx);line-height:1.6;overflow-x:hidden;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body::before{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradient(60% 50% at 15% 0,rgba(136,192,208,.22),transparent 70%),radial-gradient(50% 45% at 90% 10%,rgba(129,161,193,.2),transparent 70%),radial-gradient(40% 40% at 50% 100%,rgba(163,190,140,.12),transparent 70%)}
+a{color:inherit;text-decoration:none}
+.w{width:min(1120px,100% - 40px);margin:0 auto}
+nav{position:sticky;top:0;z-index:10;backdrop-filter:blur(14px);background:color-mix(in srgb,var(--bg) 72%,transparent);border-bottom:1px solid var(--bd);padding-top:env(safe-area-inset-top,0px)}
+nav .w{display:flex;align-items:center;justify-content:space-between;height:60px}
+.logo{font-weight:700;font-size:20px;letter-spacing:.2px}.logo b{color:var(--ac)}
+nav ul{display:flex;gap:26px;list-style:none;padding:0;font-size:15px;color:var(--mu)}
+nav ul a:hover{color:var(--tx)}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:12px;font-weight:600;font-size:16px;transition:transform .2s,box-shadow .2s,background .2s;cursor:pointer;border:1px solid var(--bd);color:var(--tx);background:var(--card)}
+.btn:hover{transform:translateY(-2px)}
+.btn.p{background:linear-gradient(135deg,var(--ac),var(--ac2));color:#1f2430;border:0;box-shadow:0 8px 28px rgba(136,192,208,.35)}
+.btn.p:hover{box-shadow:0 12px 34px rgba(136,192,208,.5)}
+.hero{text-align:center;padding:clamp(56px,10vw,110px) 0 36px}
+.pill{display:inline-block;padding:6px 16px;border-radius:99px;border:1px solid var(--bd);background:var(--card);font-size:13px;color:var(--mu);margin-bottom:22px}
+.pill i{font-style:normal;color:var(--gr)}
+h1{font-size:clamp(40px,7vw,78px);line-height:1.05;letter-spacing:-1.5px;font-weight:800}
+h1 span{background:linear-gradient(100deg,var(--ac),var(--ac2) 50%,var(--gr));-webkit-background-clip:text;background-clip:text;color:transparent}
+.lead{max-width:640px;margin:22px auto 32px;font-size:clamp(17px,2vw,20px);color:var(--mu)}
+.cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.chips{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:26px;font-size:13px;color:var(--mu)}
+.chips span{padding:4px 12px;border-radius:8px;background:var(--bg2);border:1px solid var(--bd)}
+.ed{margin:46px auto 0;max-width:900px;border-radius:16px;overflow:hidden;background:#2e3440;color:#eceff4;border:1px solid rgba(255,255,255,.12);box-shadow:0 30px 80px rgba(0,0,0,.45),0 0 0 1px rgba(136,192,208,.1);text-align:left;color-scheme:dark}
+.tb{display:flex;align-items:center;gap:8px;padding:10px 14px;background:#272c36}
+.tb i{width:12px;height:12px;border-radius:50%;background:#bf616a}.tb i:nth-child(2){background:#ebcb8b}.tb i:nth-child(3){background:#a3be8c}
+.tabs{display:flex;gap:4px;margin-left:14px;overflow-x:auto}
+.tabs button{all:unset;cursor:pointer;padding:6px 14px;border-radius:8px 8px 0 0;font-size:13px;color:#a9b3c4;white-space:nowrap}
+.tabs button.on{background:#2e3440;color:#eceff4}
+.tool{display:flex;gap:8px;padding:8px 14px;background:#2e3440;border-bottom:1px solid rgba(255,255,255,.08);flex-wrap:wrap}
+.tool button{all:unset;cursor:pointer;font-size:12.5px;padding:5px 12px;border-radius:7px;background:#3b4252;color:#d8dee9;transition:background .2s}
+.tool button:hover,.tool button:focus-visible{background:#4c566a}
+.tool .sp{margin-left:auto}
+.body{display:flex;height:300px;font:14px/1.7 "Cascadia Code",Consolas,"SF Mono",monospace}
+.gut{padding:12px 10px 12px 16px;text-align:right;color:#616e88;user-select:none;overflow:hidden;white-space:pre;background:#2b303b}
+textarea{flex:1;resize:none;border:0;outline:0;background:transparent;color:#eceff4;font:inherit;padding:12px 16px;min-width:0;white-space:pre-wrap}
+.pv{display:none;flex:1;padding:12px 18px;overflow:auto;border-left:1px solid rgba(255,255,255,.08);font-family:"Segoe UI",system-ui,sans-serif;font-size:15px;line-height:1.6}
+.pv h3{color:#88c0d0;font-size:20px;margin:4px 0}
+.ed.pvon .pv{display:block}
+.sb{display:flex;gap:18px;padding:7px 16px;background:#272c36;font-size:12.5px;color:#a9b3c4;flex-wrap:wrap}
+.sb b{color:#88c0d0;font-weight:600}.sb .sp{margin-left:auto}
+section{padding:clamp(56px,8vw,96px) 0}
+h2{font-size:clamp(30px,4.4vw,46px);letter-spacing:-.8px;line-height:1.15;text-align:center}
+.sub{text-align:center;color:var(--mu);max-width:560px;margin:12px auto 44px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px}
+.card{padding:26px;border-radius:18px;background:var(--card);border:1px solid var(--bd);transition:transform .25s,border-color .25s,box-shadow .25s}
+.card:hover{transform:translateY(-5px);border-color:var(--ac);box-shadow:0 14px 40px rgba(0,0,0,.25)}
+.card .ic{font-size:30px;width:54px;height:54px;display:grid;place-items:center;border-radius:14px;background:linear-gradient(135deg,rgba(136,192,208,.25),rgba(129,161,193,.15));margin-bottom:16px}
+.card h3{font-size:18px;margin-bottom:6px}.card p{color:var(--mu);font-size:15px}
+.steps{counter-reset:s;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
+.step{position:relative;padding:28px 24px 24px;border-radius:18px;background:var(--card);border:1px solid var(--bd)}
+.step::before{counter-increment:s;content:counter(s);position:absolute;top:-16px;left:22px;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-weight:700;background:linear-gradient(135deg,var(--ac),var(--ac2));color:#1f2430}
+.step h3{margin-bottom:4px}.step p{color:var(--mu);font-size:15px}
+.warn{margin:34px auto 0;max-width:760px;padding:16px 20px;border-radius:14px;border:1px solid rgba(235,203,139,.5);background:rgba(235,203,139,.1);font-size:15px;text-align:center}
+.warn b{color:var(--yl)}
+.dl{text-align:center;padding:clamp(40px,6vw,64px) 24px;border-radius:26px;background:linear-gradient(135deg,rgba(136,192,208,.2),rgba(129,161,193,.12));border:1px solid var(--bd)}
+.dl p{color:var(--mu);max-width:520px;margin:12px auto 26px}
+footer{border-top:1px solid var(--bd);padding:30px 0;color:var(--mu);font-size:14px}
+footer .w{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+footer a:hover{color:var(--ac)}
+.rv{opacity:0;transform:translateY(24px);transition:opacity .7s,transform .7s}.rv.in{opacity:1;transform:none}
+:focus-visible{outline:2px solid var(--ac);outline-offset:3px}
+@media (max-width:700px){nav ul{display:none}.gut{display:none}.body{height:260px}.ed.pvon .pv{display:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}.rv{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<nav><div class="w"><a class="logo" href="#top">✍️ Ez<b>Typer</b></a><ul><li><a href="#try">Try it</a></li><li><a href="#features">Features</a></li><li><a href="#get">Download</a></li><li><a href="https://github.com/masik52xd/EzTyper" target="_blank" rel="noopener">GitHub ↗</a></li></ul></div></nav>
+
+<header class="hero w" id="top">
+<span class="pill"><i>●</i> Free &amp; open source · MIT licensed</span>
+<h1>Type easy.<br><span>Focus harder.</span></h1>
+<p class="lead">EzTyper is a modern, lightweight text editor with built-in productivity tools: tabs, line numbers, a Pomodoro timer, live preview and more. No installer required.</p>
+<div class="cta"><a class="btn p" href="https://github.com/masik52xd/EzTyper/releases" target="_blank" rel="noopener">⬇ Download portable version</a><a class="btn" href="https://github.com/masik52xd/EzTyper" target="_blank" rel="noopener">View on GitHub</a></div>
+<div class="chips"><span>Portable</span><span>HTML + Python</span><span>Nordic Dark theme</span><span>Light on resources</span></div>
+
+<div class="ed" id="try">
+<div class="tb"><i></i><i></i><i></i><div class="tabs" id="tabs"></div></div>
+<div class="tool"><button id="bClean">🧹 Clean text</button><button id="bIdea">💡 Idea of the day</button><button id="bPv">👁 Preview (F5)</button><button class="sp" id="bPom">⏱ Pomodoro 25:00 ▶</button></div>
+<div class="body"><div class="gut" id="gut"></div><textarea id="ta" spellcheck="false" aria-label="Demo editor"></textarea><div class="pv" id="pv"></div></div>
+<div class="sb"><span>Ln <b id="ln">1</b>, Col <b id="col">1</b></span><span>Words <b id="wc">0</b></span><span>Reading time <b id="rt">0 min</b></span><span class="sp">Nordic Dark · UTF-8</span></div>
+</div>
+<p class="sub" style="margin:14px auto 0;font-size:14px">↑ This is a live demo. Type something, switch tabs, try the buttons.</p>
+</header>
+
+<section id="features"><div class="w">
+<h2 class="rv">Everything you need.<br>Nothing you don’t.</h2>
+<p class="sub rv">A small, fast editor that stays out of your way while giving you the tools writers and coders actually use.</p>
+<div class="grid">
+<div class="card rv"><div class="ic">📑</div><h3>Multi-tab interface</h3><p>Work with multiple text documents at once and jump between them instantly.</p></div>
+<div class="card rv"><div class="ic">🔢</div><h3>Line numbering</h3><p>A clear view of your text and code structure, always in sight.</p></div>
+<div class="card rv"><div class="ic">🎨</div><h3>Customizable look</h3><p>Color themes like Nordic Dark, adjustable text margins in pixels, and your own font and size for the preview.</p></div>
+<div class="card rv"><div class="ic">⏱️</div><h3>Pomodoro timer</h3><p>Built-in timer to keep your focus sharp and your work time under control.</p></div>
+<div class="card rv"><div class="ic">💡</div><h3>Idea of the Day</h3><p>A tiny generator of inspiration for quick notes when the page feels too blank.</p></div>
+<div class="card rv"><div class="ic">🧹</div><h3>Text cleaner</h3><p>Quickly clean up and format messy text with a single click.</p></div>
+<div class="card rv"><div class="ic">📖</div><h3>Reading time</h3><p>Automatically estimates how long your text takes to read, aloud or silently.</p></div>
+<div class="card rv"><div class="ic">👁️</div><h3>Live preview</h3><p>Press <b>F5</b> to see your formatted text in real time.</p></div>
+<div class="card rv"><div class="ic">🪶</div><h3>Lightweight</h3><p>More features than Notepad, yet it uses fewer resources. Runs well even on older machines.</p></div>
+</div></div></section>
+
+<section id="get"><div class="w">
+<h2 class="rv">Up and running in a minute</h2>
+<p class="sub rv">The release is a portable version, so there is nothing to install.</p>
+<div class="steps rv">
+<div class="step"><h3>Download</h3><p>Grab the portable build from the Releases page on GitHub.</p></div>
+<div class="step"><h3>Extract</h3><p>Unpack it into any regular folder, such as Documents or a USB drive.</p></div>
+<div class="step"><h3>Start typing</h3><p>Run EzTyper and enjoy. Your notes, your pace.</p></div>
+</div>
+<div class="warn rv"><b>Heads up:</b> do not place EzTyper in system folders like <code>Program Files</code>, <code>Program Files (x86)</code> or <code>Windows</code>.</div>
+<div class="dl rv" style="margin-top:56px"><h2 style="font-size:clamp(28px,4vw,40px)">Ready to write?</h2><p>Free forever, MIT licensed. Take the source, make it yours.</p><div class="cta"><a class="btn p" href="https://github.com/masik52xd/EzTyper/releases" target="_blank" rel="noopener">⬇ Get the portable version</a><a class="btn" href="https://github.com/masik52xd/EzTyper" target="_blank" rel="noopener">Source code</a></div></div>
+</div></section>
+
+<footer><div class="w"><span>© 2026 Masik · Released under the MIT License</span><span><a href="https://github.com/masik52xd" target="_blank" rel="noopener">GitHub</a> · <a href="http://mwkdev.pp.ua/">mwkdev.pp.ua</a></span></div></footer>
+
+<script>
+const D=[["notes.txt","# Welcome to EzTyper\nA tiny editor with big ideas.\n\nTry the Pomodoro timer below, press F5 for a\nlive preview, or clean up this    messy   text\n\n\nwith one click."],["script.md","# Episode 12: The Setup\nCold open. Close-up on the keyboard.\n\n# Act one\nOur hero opens a blank file and starts to type."],["ideas.txt","1. A launcher that weighs less than a photo\n2. Chess, but your pieces can level up\n3. Overlay for esports streams"]];
+const IDEAS=["Write a letter to your future self.","Describe your desk in exactly 50 words.","Start a story with the last line.","List 5 tiny habits worth keeping.","Explain your project to a 10-year-old.","Write the opening scene of a game."];
+const $=id=>document.getElementById(id),ta=$("ta"),ed=document.querySelector(".ed");let cur=0;
+const esc=s=>s.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+function tabs(){$("tabs").innerHTML=D.map((d,i)=>`<button class="${i===cur?"on":""}" data-i="${i}">${d[0]}</button>`).join("")}
+function upd(){D[cur][1]=ta.value;const L=ta.value.split("\n"),p=ta.selectionStart,b=ta.value.slice(0,p).split("\n");
+$("gut").textContent=L.map((_,i)=>i+1).join("\n");$("gut").scrollTop=ta.scrollTop;
+$("ln").textContent=b.length;$("col").textContent=b[b.length-1].length+1;
+const w=(ta.value.trim().match(/\S+/g)||[]).length;$("wc").textContent=w;
+const m=w/200;$("rt").textContent=w===0?"0 min":m<1?"< 1 min":"~"+Math.round(m)+" min";
+$("pv").innerHTML=L.map(l=>l.startsWith("# ")?`<h3>${esc(l.slice(2))}</h3>`:`<div>${esc(l)||"&nbsp;"}</div>`).join("")}
+function load(i){cur=i;ta.value=D[i][1];tabs();upd()}
+$("tabs").onclick=e=>{const b=e.target.closest("button");if(b)load(+b.dataset.i)};
+["input","keyup","click","scroll"].forEach(ev=>ta.addEventListener(ev,upd));
+$("bClean").onclick=()=>{ta.value=ta.value.replace(/[ \t]+/g," ").replace(/ ?\n ?/g,"\n").replace(/\n{3,}/g,"\n\n").trim();upd()};
+$("bIdea").onclick=()=>{ta.value+=(ta.value&&!ta.value.endsWith("\n")?"\n":"")+"💡 "+IDEAS[Math.floor(Math.random()*IDEAS.length)];upd();ta.scrollTop=ta.scrollHeight};
+const pv=()=>ed.classList.toggle("pvon");$("bPv").onclick=pv;
+ta.addEventListener("keydown",e=>{if(e.key==="F5"){e.preventDefault();pv()}});
+let t=1500,iv=null;const bp=$("bPom"),fm=s=>String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");
+bp.onclick=()=>{if(iv){clearInterval(iv);iv=null;bp.textContent="⏱ Pomodoro "+fm(t)+" ▶";return}
+iv=setInterval(()=>{t--;bp.textContent="⏱ "+fm(t)+" ❚❚";if(t<=0){clearInterval(iv);iv=null;t=1500;bp.textContent="✅ Break time! Reset ▶"}},1000);bp.textContent="⏱ "+fm(t)+" ❚❚"};
+const io=new IntersectionObserver(es=>es.forEach(x=>{if(x.isIntersecting){x.target.classList.add("in");io.unobserve(x.target)}}),{threshold:.15});
+document.querySelectorAll(".rv").forEach(el=>io.observe(el));
+load(0);
+</script>
+</body>
+</html>
